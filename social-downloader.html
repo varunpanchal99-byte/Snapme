@@ -947,86 +947,25 @@
     // Simulate API call delay (replace with real API below)
     await new Promise(r => setTimeout(r, 1800));
 
-   async function {
-  const url = document.getElementById('urlInput').value.trim();
-  if (!url) { showError('Please paste a valid URL.'); return; }
-
-  const btn = document.getElementById('analyzeBtn');
-  btn.disabled = true;
-  showLoading('Fetching media...');
-
-  try {
-    const response = await fetch('https://api.cobalt.tools/api/json', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        url: url,
-        vQuality: selectedQuality,       // "720", "1080", "best", etc.
-        aFormat: 'mp3',                  // audio format
-        isAudioOnly: selectedFormat === 'mp3'
-      })
-    });
-
-    const data = await response.json();
-    hideLoading();
-
-    if (data.status === 'stream' || data.status === 'redirect') {
-      // Single direct download URL
-      showDirectDownload(data.url, url);
-
-    } else if (data.status === 'picker') {
-      // Multiple files (e.g. Instagram carousel)
-      showPickerDownloads(data.picker, url);
-
-    } else {
-      showError(data.text || 'Could not fetch media. The URL may be private or unsupported.');
-    }
-
-  } catch (err) {
-    showError('Network error. Try again or check your connection.');
-  }
-
-  btn.disabled = false;
-}function showDirectDownload(downloadUrl, originalUrl) {
-  const platform = detectPlatform(originalUrl);
-  document.getElementById('previewThumb').textContent = platform.icon;
-  document.getElementById('mediaTitle').textContent = platform.name + ' Media';
-  document.getElementById('mediaMeta').innerHTML = `<span class="meta-tag">${platform.name}</span>`;
-  document.getElementById('mediaDesc').textContent = 'Ready to download.';
-
-  document.getElementById('downloadOptions').innerHTML = `
-    <a class="dl-btn" href="${downloadUrl}" download target="_blank">
-      <div class="dl-icon">⬇️</div>
-      <div class="dl-info">
-        <div class="dl-format">Download File</div>
-        <div class="dl-size">Click to save</div>
-      </div>
-    </a>
-  `;
-  document.getElementById('resultArea').classList.add('show');
-}
-
-function showPickerDownloads(items, originalUrl) {
-  const platform = detectPlatform(originalUrl);
-  document.getElementById('previewThumb').textContent = platform.icon;
-  document.getElementById('mediaTitle').textContent = platform.name + ' — Multiple Files';
-  document.getElementById('mediaMeta').innerHTML = `<span class="meta-tag">${items.length} items found</span>`;
-  document.getElementById('mediaDesc').textContent = 'Select files to download:';
-
-  document.getElementById('downloadOptions').innerHTML = items.map((item, i) => `
-    <a class="dl-btn" href="${item.url}" download target="_blank">
-      <div class="dl-icon">${item.type === 'video' ? '🎬' : '🖼️'}</div>
-      <div class="dl-info">
-        <div class="dl-format">${item.type === 'video' ? 'Video' : 'Image'} ${i + 1}</div>
-        <div class="dl-size">Click to download</div>
-      </div>
-    </a>
-  `).join('');
-  document.getElementById('resultArea').classList.add('show');
-}
+    // ---------------------------------------------------------------------------
+    // REAL API INTEGRATION GUIDE:
+    // 
+    // Option 1 — RapidAPI (easiest, paid):
+    //   const response = await fetch('https://social-media-video-downloader.p.rapidapi.com/smvd/get/all', {
+    //     method: 'POST',
+    //     headers: { 'x-rapidapi-key': 'YOUR_KEY', 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ url })
+    //   });
+    //
+    // Option 2 — cobalt.tools API (free, open-source):
+    //   const response = await fetch('https://api.cobalt.tools/api/json', {
+    //     method: 'POST',
+    //     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ url, vQuality: selectedQuality, aFormat: 'mp3', isAudioOnly: selectedFormat==='mp3' })
+    //   });
+    //
+    // Option 3 — SnapSave, SaveFrom, etc. (scraper-based, less reliable)
+    // ---------------------------------------------------------------------------
 
     hideLoading();
 
@@ -1118,7 +1057,7 @@ function showPickerDownloads(items, originalUrl) {
 
   // Enter key support
   document.getElementById('urlInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter')
+    if (e.key === 'Enter') analyzeUrl();
   });
 
   // Init
