@@ -947,7 +947,7 @@
     // Simulate API call delay (replace with real API below)
     await new Promise(r => setTimeout(r, 1800));
 
-   async function analyzeUrl() {
+   async function {
   const url = document.getElementById('urlInput').value.trim();
   if (!url) { showError('Please paste a valid URL.'); return; }
 
@@ -1118,7 +1118,7 @@ function showPickerDownloads(items, originalUrl) {
 
   // Enter key support
   document.getElementById('urlInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') analyzeUrl();
+    if (e.key === 'Enter')
   });
 
   // Init
